@@ -7,3 +7,4 @@ plotly
 Pillow
 numpy
 opencv-python-headless
+libgl1-mesa-glx
