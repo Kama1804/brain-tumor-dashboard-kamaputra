@@ -1,10 +1,8 @@
 streamlit==1.32.0
 ultralytics==8.2.0
-torch
-torchvision
 pandas
 plotly
 Pillow
 numpy
 opencv-python-headless
-libgl1-mesa-glx
+gdown
