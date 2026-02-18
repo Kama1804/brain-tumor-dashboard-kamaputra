@@ -4,7 +4,6 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 import os
-import torch
 import gdown
 from datetime import datetime
 import plotly.express as px
@@ -12,7 +11,7 @@ import plotly.graph_objects as go
 from typing import Dict, Optional
 
 # ==================== CRITICAL: Force CPU ====================
-torch.set_default_device("cpu")
+
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 # ==================== CONFIGURATION ====================
@@ -1682,3 +1681,4 @@ st.markdown("""
     <p style='font-size: 0.8rem;'>⚕️ For research and educational purposes • Consult qualified medical professionals for diagnosis</p>
 </div>
 """, unsafe_allow_html=True)
+
