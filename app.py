@@ -26,6 +26,7 @@ st.set_page_config(
 MODEL_PATH = 'best.pt'
 WAREHOUSE_FILE = 'tumor_warehouse.csv'
 PATIENT_DATA_FILE = 'patient_records.csv'
+CSV_FILE = "patient_record.csv" # Added for Patient Records Form
 
 # Class name mapping for better display
 CLASS_DISPLAY_NAMES = {
@@ -130,6 +131,13 @@ def load_custom_css():
     """, unsafe_allow_html=True)
 
 load_custom_css()
+
+# ==================== NEW: CSV LOADING FUNCTION ====================
+@st.cache_data
+def load_patient_data():
+    if not os.path.exists(CSV_FILE):
+        return pd.DataFrame(columns=["patient_id", "age", "diagnosis", "date"])
+    return pd.read_csv(CSV_FILE)
 
 # ==================== MODEL MANAGEMENT ====================
 @st.cache_resource
@@ -878,13 +886,14 @@ if model is None:
 
 st.markdown("---")
 
-# Create tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+# Create tabs (Added Tab 6 for the Patient Records)
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🔍 AI Diagnosis (OLTP)",
     "🗄️ Data Warehouse (Star Schema)",
     "📈 Analytics Dashboard (OLAP)",
     "👥 Population Insights",
-    "📋 Export & Reports"
+    "📋 Export & Reports",
+    "🏥 Patient Records"
 ])
 
 # ==================== TAB 1: DIAGNOSIS ====================
@@ -1300,7 +1309,7 @@ with tab3:
         - Visualizations update in real-time
         """)
 
-# ==================== TAB 4: POPULATION INSIGHTS (NEW) ====================
+# ==================== TAB 4: POPULATION INSIGHTS ====================
 with tab4:
     st.header("👥 Population Insights from Historical Patient Records")
     st.markdown(
@@ -1672,6 +1681,50 @@ with tab5:
         st.info("📭 No data available for export")
         st.markdown("Process some scans first to generate reports.")
 
+# ==================== TAB 6: PATIENT RECORDS (NEW) ====================
+with tab6:
+    st.header("🏥 Patient Records Management")
+    
+    # Load the patient records using the cached function
+    patient_df = load_patient_data()
+
+    st.subheader("📋 Patient Records Directory")
+    if patient_df.empty:
+        st.info("No patient records found in the directory.")
+    else:
+        st.dataframe(patient_df, use_container_width=True)
+
+    st.markdown("---")
+    
+    st.subheader("➕ Add New Patient Record")
+    with st.form("add_patient_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            patient_id_input = st.text_input("Patient ID (e.g. PT-2024-001)")
+            age_input = st.number_input("Age", min_value=0, max_value=120)
+        with col2:
+            diagnosis_input = st.text_input("Diagnosis (e.g. Meningioma)")
+            date_input = st.date_input("Date of Visit")
+
+        submit = st.form_submit_button("Save Record", type="primary")
+
+        if submit:
+            if patient_id_input.strip() == "":
+                st.error("⚠️ Patient ID cannot be empty.")
+            else:
+                new_row = pd.DataFrame([{
+                    "patient_id": patient_id_input,
+                    "age": age_input,
+                    "diagnosis": diagnosis_input,
+                    "date": date_input
+                }])
+
+                patient_df = pd.concat([patient_df, new_row], ignore_index=True)
+                patient_df.to_csv(CSV_FILE, index=False)
+
+                st.success(f"✅ Patient record for {patient_id_input} added successfully!")
+                st.rerun()
+
 # ==================== FOOTER ====================
 st.markdown("---")
 st.markdown("""
@@ -1681,4 +1734,3 @@ st.markdown("""
     <p style='font-size: 0.8rem;'>⚕️ For research and educational purposes • Consult qualified medical professionals for diagnosis</p>
 </div>
 """, unsafe_allow_html=True)
-
