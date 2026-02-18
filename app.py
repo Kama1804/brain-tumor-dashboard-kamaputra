@@ -1313,7 +1313,7 @@ with tab3:
 with tab4:
     st.header("👥 Population Insights from Historical Patient Records")
     st.markdown(
-        "Analysis of **250,000+ historical patient records** to understand tumor demographics, "
+        "Analysis of **150,000+ historical patient records** to understand tumor demographics, "
         "common causes, and risk profiles."
     )
 
@@ -1734,3 +1734,4 @@ st.markdown("""
     <p style='font-size: 0.8rem;'>⚕️ For research and educational purposes • Consult qualified medical professionals for diagnosis</p>
 </div>
 """, unsafe_allow_html=True)
+
