@@ -4,10 +4,16 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 import os
-from datetime import datetime, timedelta
+import torch
+import gdown
+from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Optional
+
+# ==================== CRITICAL: Force CPU ====================
+torch.set_default_device("cpu")
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 # ==================== CONFIGURATION ====================
 st.set_page_config(
