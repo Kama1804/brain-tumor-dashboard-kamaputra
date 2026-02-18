@@ -1,6 +1,6 @@
 streamlit
 ultralytics
-torch
+torch==2.2.0
 pandas
 plotly
 Pillow
